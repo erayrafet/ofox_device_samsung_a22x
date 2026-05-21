@@ -1,19 +1,4 @@
-
-on init
-    setprop sys.usb.configfs 1
-    setprop sys.usb.ffs.aio_compat 1
-    setprop ro.debuggable 1
-    setprop service.adb.root 1
-    setprop sys.usb.configfs 1
-    setprop sys.usb.config adb
-
-on fs && property:ro.debuggable=0
-    # distinguish USB shoulde connect or not, i.e. CDP vs SDP
-    write /sys/class/udc/musb-hdrc/device/cmode 2
-    # set charging free due to it wait for USB activation
-    start adbd
-
-   on boot
+on boot
 	start health-hal-2-1
 
 on boot
@@ -33,8 +18,8 @@ on boot
 #Set swappiness
     write /proc/sys/vm/swappiness 0
 #CPU governor
-    write /sys/devices/system/cpu/cpufreq/policy0/scaling_governor ondemand
-    write /sys/devices/system/cpu/cpufreq/policy6/scaling_governor ondemand
+    write /sys/devices/system/cpu/cpufreq/policy0/scaling_governor schedutil
+    write /sys/devices/system/cpu/cpufreq/policy6/scaling_governor schedutil
 
 on post-fs
     # Support A/B feature for EMMC and UFS boot region

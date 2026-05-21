@@ -21,16 +21,34 @@
 #set -o xtrace
 FDEVICE="a22x"
 
-	export LC_ALL="C"
+fox_get_target_device() {
+   local chkdev
+
+   chkdev=$(echo "$BASH_SOURCE" | grep -w "$FDEVICE")
+   if [ -n "$chkdev" ]; then
+      FOX_BUILD_DEVICE="$FDEVICE"
+   else
+      chkdev=$(set | grep BASH_ARGV | grep -w "$FDEVICE")
+      [ -n "$chkdev" ] && FOX_BUILD_DEVICE="$FDEVICE"
+   fi
+}
+
+if [ -z "$1" ] && [ -z "$FOX_BUILD_DEVICE" ]; then
+   fox_get_target_device
+fi
+
+if [ "$1" = "$FDEVICE" ] || [ "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
+
  	export ALLOW_MISSING_DEPENDENCIES=true
+ 	export FOX_ALLOW_EARLY_SETTINGS_LOAD=1
 	export FOX_ASH_IS_BASH=1
     export FOX_DELETE_AROMAFM=1
     	export FOX_DELETE_INITD_ADDON=1
 	export FOX_ENABLE_APP_MANAGER=1
+	export FOX_ENABLE_AVB=1
 	export FOX_ENABLE_KERNELSU_SUPPORT=0
-	export FOX_ENABLE_KERNELSU_NEXT_SUPPORT=1
 	export FOX_ENABLE_SUKISU_SUPPORT=0
-#	export FOX_EXCLUDE_NANO_EDITOR=0
+	export FOX_MISCELLANEOUS_ROOT_DIRECTORY=/external_sd
 	export FOX_NO_SAMSUNG_SPECIAL=1
 	export FOX_REMOVE_AAPT=1
 	export FOX_REMOVE_ZIP_BINARY=1
@@ -38,14 +56,13 @@ FDEVICE="a22x"
 	export FOX_USE_BUSYBOX_BINARY=1
     export FOX_USE_DATE_BINARY=1
 	export FOX_USE_LZ4_BINARY=0
-#	export FOX_USE_NANO_EDITOR=1
 	export FOX_USE_TAR_BINARY=1
 	export FOX_USE_XZ_UTILS=1
 	export FOX_USE_ZSTD_BINARY=0
 	export FOX_VANILLA_BUILD=1
-	export TARGET_DEVICE_ALT="a22x"
+	export LC_ALL="C"
 	export TW_DEFAULT_LANGUAGE="en"
+	export USE_CCACHE=1
 
-	# enable AVB settings
-	export FOX_ENABLE_AVB=1
-#
+fi
+
